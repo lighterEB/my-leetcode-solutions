@@ -8,6 +8,7 @@ impl Solution {
             }
             map.insert(num, index);
         }
+
         vec![]
     }
 }
