@@ -1,0 +1,140 @@
+name: Update README
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate README content
+        run: |
+          python -c "
+import os
+from datetime import datetime
+
+# 配置区
+LANGUAGE_MAP = {
+    '.java': 'Java',
+    '.rs': 'Rust',
+    '.go': 'Go',
+    '.py': 'Python'
+}
+
+DIFFICULTY_MAP = {
+    # 你可以后续扩展为从 API 获取，这里先用常见映射（可手动维护或后续自动化）
+    '0001-two-sum': ('Easy', 'Two Sum'),
+    # 示例格式：'文件夹名': ('难度', '英文标题'),
+    # 你可以逐步添加更多，或者我们后面用 API 自动填充
+}
+
+# 扫描题目文件夹
+problems = []
+language_stats = {lang: 0 for lang in LANGUAGE_MAP.values()}
+total = easy = medium = hard = 0
+
+for folder in sorted(os.listdir('.')):
+    if not folder.startswith('0') or not os.path.isdir(folder):
+        continue
+    number = folder.split('-', 1)[0]
+    slug = folder.split('-', 1)[1] if '-' in folder else ''
+    
+    # 获取难度和标题（优先从映射取，暂无则用占位）
+    difficulty, title = DIFFICULTY_MAP.get(folder, ('Unknown', slug.replace('-', ' ').title()))
+    
+    # 扫描支持语言
+    supported_langs = []
+    if os.path.isdir(folder):
+        for file in os.listdir(folder):
+            if file.startswith('solution.'):
+                ext = os.path.splitext(file)[1]
+                if ext in LANGUAGE_MAP:
+                    lang_name = LANGUAGE_MAP[ext]
+                    supported_langs.append(lang_name)
+                    language_stats[lang_name] += 1
+    
+    if supported_langs:
+        problems.append({
+            'number': number,
+            'title': title,
+            'link': f'https://leetcode.com/problems/{slug}/',
+            'difficulty': difficulty,
+            'langs': ', '.join(sorted(supported_langs)),
+            'date': datetime.fromtimestamp(os.path.getmtime(folder)).strftime('%Y-%m-%d')
+        })
+        total += 1
+        if difficulty == 'Easy': easy += 1
+        elif difficulty == 'Medium': medium += 1
+        elif difficulty == 'Hard': hard += 1
+
+# 生成 Markdown 片段
+table_lines = [
+    '| 编号 | 标题 | 难度 | 支持语言 | 更新时间 |',
+    '|------|------|------|----------|----------|'
+]
+for p in problems:
+    table_lines.append(f'| {p["number"]} | [{p["title"]}]({p["link"]}) | {p["difficulty"]} | {p["langs"]} | {p["date"]} |')
+
+stats_section = f'''## 刷题进度
+
+- 已解决题目：{total}
+- Easy：{easy}
+- Medium：{medium}
+- Hard：{hard}
+
+## 语言统计
+
+- Java：{language_stats['Java']} 题
+- Rust：{language_stats['Rust']} 题
+- Go：{language_stats['Go']} 题
+- Python：{language_stats['Python']} 题
+
+## 题目列表
+
+{"\n".join(table_lines)}'''
+
+print(stats_section)
+          " > new_sections.txt
+
+      - name: Update README
+        run: |
+          python -c "
+import re
+
+with open('README.md', 'r', encoding='utf-8') as f:
+    content = f.read()
+
+# 用生成的内容替换从 '## 刷题进度' 到 '## 其他' 之前的所有部分
+new_sections = open('new_sections.txt').read()
+
+# 找到标记位置
+start = content.find('## 刷题进度')
+end = content.find('## 其他')
+
+if start != -1 and end != -1:
+    updated = content[:start] + new_sections + '\n\n' + content[end:]
+else:
+    updated = content + '\n' + new_sections
+
+with open('README.md', 'w', encoding='utf-8') as f:
+    f.write(updated)
+          "
+
+      - name: Commit and push if changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git diff --quiet && echo "No changes" || (git commit -m "Auto update README stats and table" && git push)
