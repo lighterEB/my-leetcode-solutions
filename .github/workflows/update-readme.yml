@@ -11,118 +11,121 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '20'
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Generate README content
+      - name: Generate and update README
         run: |
-          python -c '
-import os
-from datetime import datetime
+          node -e "
+          const fs = require('fs');
+          const path = require('path');
+          const { DateTime } = require('luxon'); // 可选日期美化，后续可去掉
 
-LANGUAGE_MAP = {
-    ".java": "Java",
-    ".rs": "Rust",
-    ".go": "Go",
-    ".py": "Python"
-}
+          const LANGUAGE_MAP = {
+            '.java': 'Java',
+            '.rs': 'Rust',
+            '.go': 'Go',
+            '.py': 'Python'
+          };
 
-DIFFICULTY_MAP = {
-    "0001-two-sum": ("Easy", "Two Sum"),
-    "0002-add-two-numbers": ("Medium", "Add Two Numbers"),
-    "0015-3sum": ("Medium", "3Sum"),
-    "0042-trapping-rain-water": ("Hard", "Trapping Rain Water"),
-    # 添加更多题目时，在这里补充，或后续我们用 API 自动获取
-}
+          const DIFFICULTY_MAP = {
+            '0001-two-sum': ['Easy', 'Two Sum'],
+            '0002-add-two-numbers': ['Medium', 'Add Two Numbers'],
+            '0015-3sum': ['Medium', '3Sum'],
+            '0042-trapping-rain-water': ['Hard', 'Trapping Rain Water'],
+            // 添加更多题目在这里
+          };
 
-problems = []
-language_stats = {lang: 0 for lang in LANGUAGE_MAP.values()}
-total = easy = medium = hard = 0
+          const problems = [];
+          const languageStats = { Java: 0, Rust: 0, Go: 0, Python: 0 };
+          let total = 0, easy = 0, medium = 0, hard = 0;
 
-for folder in sorted(os.listdir(".")):
-    if not folder.startswith("0") or not os.path.isdir(folder):
-        continue
-    number = folder.split("-", 1)[0]
-    slug = folder.split("-", 1)[1] if "-" in folder else ""
+          const folders = fs.readdirSync('.').filter(f => fs.statSync(f).isDirectory() && /^\d{4}-/.test(f));
+          folders.sort();
 
-    difficulty, title = DIFFICULTY_MAP.get(folder, ("Unknown", slug.replace("-", " ").title()))
+          for (const folder of folders) {
+            const number = folder.slice(0, 4);
+            const slug = folder.slice(5);
+            const [difficulty = 'Unknown', title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())] = DIFFICULTY_MAP[folder] || [];
 
-    supported_langs = []
-    if os.path.isdir(folder):
-        for file in os.listdir(folder):
-            if file.startswith("solution."):
-                ext = os.path.splitext(file)[1]
-                if ext in LANGUAGE_MAP:
-                    lang_name = LANGUAGE_MAP[ext]
-                    supported_langs.append(lang_name)
-                    language_stats[lang_name] += 1
+            const files = fs.readdirSync(folder);
+            const supportedLangs = [];
 
-    if supported_langs:
-        problems.append({
-            "number": number,
-            "title": title,
-            "link": f"https://leetcode.com/problems/{slug}/",
-            "difficulty": difficulty,
-            "langs": ", ".join(sorted(supported_langs)),
-            "date": datetime.fromtimestamp(os.path.getmtime(folder)).strftime("%Y-%m-%d")
-        })
-        total += 1
-        if difficulty == "Easy": easy += 1
-        elif difficulty == "Medium": medium += 1
-        elif difficulty == "Hard": hard += 1
+            for (const file of files) {
+              if (file.startsWith('solution.')) {
+                const ext = path.extname(file);
+                const lang = LANGUAGE_MAP[ext];
+                if (lang) {
+                  supportedLangs.push(lang);
+                  languageStats[lang]++;
+                }
+              }
+            }
 
-table_lines = [
-    "| 编号 | 标题 | 难度 | 支持语言 | 更新时间 |",
-    "|------|------|------|----------|----------|"
-]
-for p in problems:
-    table_lines.append(f"| {p["number"]} | [{p["title"]}]({p["link"]}) | {p["difficulty"]} | {p["langs"]} | {p["date"]} |")
+            if (supportedLangs.length > 0) {
+              const mtime = fs.statSync(folder).mtime;
+              const date = mtime.getFullYear() + '-' + String(mtime.getMonth()+1).padStart(2,'0') + '-' + String(mtime.getDate()).padStart(2,'0');
 
-stats_section = (
-    "## 刷题进度\\n\\n"
-    f"- 已解决题目：{total}\\n"
-    f"- Easy：{easy}\\n"
-    f"- Medium：{medium}\\n"
-    f"- Hard：{hard}\\n\\n"
-    "## 语言统计\\n\\n"
-    f"- Java：{language_stats["Java"]} 题\\n"
-    f"- Rust：{language_stats["Rust"]} 题\\n"
-    f"- Go：{language_stats["Go"]} 题\\n"
-    f"- Python：{language_stats["Python"]} 题\\n\\n"
-    "## 题目列表\\n\\n"
-    + "\\n".join(table_lines)
-)
+              problems.push({
+                number,
+                title,
+                link: `https://leetcode.com/problems/${slug}/`,
+                difficulty,
+                langs: supportedLangs.sort().join(', '),
+                date
+              });
 
-with open("new_sections.txt", "w", encoding="utf-8") as f:
-    f.write(stats_section)
-          ' > /dev/null  # 可选：隐藏输出
+              total++;
+              if (difficulty === 'Easy') easy++;
+              else if (difficulty === 'Medium') medium++;
+              else if (difficulty === 'Hard') hard++;
+            }
+          }
 
-      - name: Update README
-        run: |
-          python -c '
-import re
+          // 生成表格
+          let table = '| 编号 | 标题 | 难度 | 支持语言 | 更新时间 |\\n';
+          table += '|------|------|------|----------|----------|\\n';
+          for (const p of problems) {
+            table += `| ${p.number} | [${p.title}](${p.link}) | ${p.difficulty} | ${p.langs} | ${p.date} |\\n`;
+          }
 
-with open("README.md", "r", encoding="utf-8") as f:
-    content = f.read()
+          // 生成统计部分
+          const newContent = 
+            '## 刷题进度\\n\\n' +
+            `- 已解决题目：${total}\\n` +
+            `- Easy：${easy}\\n` +
+            `- Medium：${medium}\\n` +
+            `- Hard：${hard}\\n\\n' +
+            '## 语言统计\\n\\n' +
+            `- Java：${languageStats.Java} 题\\n` +
+            `- Rust：${languageStats.Rust} 题\\n` +
+            `- Go：${languageStats.Go} 题\\n` +
+            `- Python：${languageStats.Python} 题\\n\\n' +
+            '## 题目列表\\n\\n' +
+            table;
 
-new_sections = open("new_sections.txt").read().rstrip()
+          // 读取原 README
+          let readme = fs.readFileSync('README.md', 'utf-8');
 
-start = content.find("## 刷题进度")
-end = content.find("## 其他")
+          // 替换从 ## 刷题进度 到 ## 其他 之前的内容
+          const startMarker = '## 刷题进度';
+          const endMarker = '## 其他';
 
-if start != -1 and end != -1:
-    updated = content[:start] + new_sections + "\n\n" + content[end:]
-else:
-    updated = content + "\n" + new_sections
+          const start = readme.indexOf(startMarker);
+          const end = readme.indexOf(endMarker);
 
-with open("README.md", "w", encoding="utf-8") as f:
-    f.write(updated)
-          '
+          let updatedReadme;
+          if (start !== -1 && end !== -1) {
+            updatedReadme = readme.slice(0, start) + newContent + '\\n\\n' + readme.slice(end);
+          } else {
+            updatedReadme = readme + '\\n' + newContent;
+          }
+
+          fs.writeFileSync('README.md', updatedReadme);
+          "
 
       - name: Commit and push if changed
         run: |
