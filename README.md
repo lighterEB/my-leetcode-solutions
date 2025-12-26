@@ -1,6 +1,6 @@
 # My LeetCode Solutions
 
-![LeetCode Stats Card](https://leetcard.jacoblin.cool/YOUR_LEETCODE_USERNAME?theme=dark&font=Source%20Code%20Pro&extension=activity)
+![LeetCode Stats Card](https://leetcard.jacoblin.cool/lightereb?site=cn&theme=dark&font=Source%20Code%20Pro&extension=activity)
 
 <!-- 替换说明：
    - 将 YOUR_LEETCODE_USERNAME 换成你的真实 LeetCode 用户名（区分大小写）。
