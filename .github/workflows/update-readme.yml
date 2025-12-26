@@ -6,134 +6,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  update-readme:
+  update:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - name: Generate and update README
-        run: |
-          node -e "
-          const fs = require('fs');
-          const path = require('path');
-          const { DateTime } = require('luxon'); // 可选日期美化，后续可去掉
-
-          const LANGUAGE_MAP = {
-            '.java': 'Java',
-            '.rs': 'Rust',
-            '.go': 'Go',
-            '.py': 'Python'
-          };
-
-          const DIFFICULTY_MAP = {
-            '0001-two-sum': ['Easy', 'Two Sum'],
-            '0002-add-two-numbers': ['Medium', 'Add Two Numbers'],
-            '0015-3sum': ['Medium', '3Sum'],
-            '0042-trapping-rain-water': ['Hard', 'Trapping Rain Water'],
-            // 添加更多题目在这里
-          };
-
-          const problems = [];
-          const languageStats = { Java: 0, Rust: 0, Go: 0, Python: 0 };
-          let total = 0, easy = 0, medium = 0, hard = 0;
-
-          const folders = fs.readdirSync('.').filter(f => fs.statSync(f).isDirectory() && /^\d{4}-/.test(f));
-          folders.sort();
-
-          for (const folder of folders) {
-            const number = folder.slice(0, 4);
-            const slug = folder.slice(5);
-            const [difficulty = 'Unknown', title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())] = DIFFICULTY_MAP[folder] || [];
-
-            const files = fs.readdirSync(folder);
-            const supportedLangs = [];
-
-            for (const file of files) {
-              if (file.startsWith('solution.')) {
-                const ext = path.extname(file);
-                const lang = LANGUAGE_MAP[ext];
-                if (lang) {
-                  supportedLangs.push(lang);
-                  languageStats[lang]++;
-                }
-              }
-            }
-
-            if (supportedLangs.length > 0) {
-              const mtime = fs.statSync(folder).mtime;
-              const date = mtime.getFullYear() + '-' + String(mtime.getMonth()+1).padStart(2,'0') + '-' + String(mtime.getDate()).padStart(2,'0');
-
-              problems.push({
-                number,
-                title,
-                link: `https://leetcode.com/problems/${slug}/`,
-                difficulty,
-                langs: supportedLangs.sort().join(', '),
-                date
-              });
-
-              total++;
-              if (difficulty === 'Easy') easy++;
-              else if (difficulty === 'Medium') medium++;
-              else if (difficulty === 'Hard') hard++;
-            }
-          }
-
-          // 生成表格
-          let table = '| 编号 | 标题 | 难度 | 支持语言 | 更新时间 |\\n';
-          table += '|------|------|------|----------|----------|\\n';
-          for (const p of problems) {
-            table += `| ${p.number} | [${p.title}](${p.link}) | ${p.difficulty} | ${p.langs} | ${p.date} |\\n`;
-          }
-
-          // 生成统计部分
-          const newContent = 
-            '## 刷题进度\\n\\n' +
-            `- 已解决题目：${total}\\n` +
-            `- Easy：${easy}\\n` +
-            `- Medium：${medium}\\n` +
-            `- Hard：${hard}\\n\\n' +
-            '## 语言统计\\n\\n' +
-            `- Java：${languageStats.Java} 题\\n` +
-            `- Rust：${languageStats.Rust} 题\\n` +
-            `- Go：${languageStats.Go} 题\\n` +
-            `- Python：${languageStats.Python} 题\\n\\n' +
-            '## 题目列表\\n\\n' +
-            table;
-
-          // 读取原 README
-          let readme = fs.readFileSync('README.md', 'utf-8');
-
-          // 替换从 ## 刷题进度 到 ## 其他 之前的内容
-          const startMarker = '## 刷题进度';
-          const endMarker = '## 其他';
-
-          const start = readme.indexOf(startMarker);
-          const end = readme.indexOf(endMarker);
-
-          let updatedReadme;
-          if (start !== -1 && end !== -1) {
-            updatedReadme = readme.slice(0, start) + newContent + '\\n\\n' + readme.slice(end);
-          } else {
-            updatedReadme = readme + '\\n' + newContent;
-          }
-
-          fs.writeFileSync('README.md', updatedReadme);
-          "
+      - name: Update README
+        run: node scripts/update-readme.js
 
       - name: Commit and push if changed
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
           git add README.md
           if git diff --staged --quiet; then
-            echo "No changes to README"
+            echo "No changes"
           else
             git commit -m "Auto update README stats and table"
             git push
