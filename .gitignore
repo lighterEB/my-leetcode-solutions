@@ -1,0 +1,21 @@
+
+# 1) 先忽略所有文件
+*
+
+# 2) 但不要忽略目录（否则无法继续匹配子文件）
+!**/
+
+# 3) 保留每题目录里的关键文件（按你的实际文件名改）
+!**/problem.md
+!**/testcases.txt
+
+# 4) 保留各语言解题文件（你脚本生成的是这些名字）
+!**/solution.py
+!**/solution.go
+!**/solution.java
+!**/solution.cpp
+!**/solution.rs
+
+# 5) 额外：保留根目录的一些文件（可选）
+!.gitignore
+!README.md
