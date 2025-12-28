@@ -46,9 +46,7 @@
 
 | 语言 | 题数 |
 |:---|:---:|
-| C++ | 1 |
 | Go | 1 |
-| Java | 1 |
 | Python | 1 |
 | Rust | 1 |
 
@@ -56,7 +54,7 @@
 
 | 编号 | 标题 | 难度 | 解法 | 更新时间 |
 |:---:|:-----|:---:|:-----|:--------:|
-| 0001 | [Two Sum](https://leetcode.cn/problems/two-sum/) | 🟢 Easy | C++, Go, Java, Python, Rust | 2025-12-28 |
+| 0001 | [Two Sum](https://leetcode.cn/problems/two-sum/) | 🟢 Easy | Go, Python, Rust | 2025-12-28 |
 
 <!-- END_PROBLEMS -->
 
