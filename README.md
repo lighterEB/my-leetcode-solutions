@@ -46,15 +46,16 @@
 
 | 语言 | 题数 |
 |:---|:---:|
-| Go | 1 |
 | Python | 1 |
 | Rust | 1 |
+| Go | 1 |
+| Java | 1 |
 
 ## 题目列表
 
 | 编号 | 标题 | 难度 | 解法 | 更新时间 |
 |:---:|:-----|:---:|:-----|:--------:|
-| 0001 | [Two Sum](https://leetcode.cn/problems/two-sum/) | 🟢 Easy | Go, Python, Rust | 2025-12-28 |
+| 0001 | [Two Sum](https://leetcode.cn/problems/two-sum/) | 🟢 Easy | Go, Java, Python, Rust | 2025-12-28 |
 
 <!-- END_PROBLEMS -->
 
