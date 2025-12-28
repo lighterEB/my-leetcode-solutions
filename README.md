@@ -18,6 +18,8 @@
   - 自动更新本 README 的进度统计
 
 ### 🛠️ 目录结构
+```
+```
 ├── 0001-two-sum/ # 题目编号-题目Slug
 │ ├── problem.md # 题目描述
 │ ├── solution.py # Python 解法 (含本地 Runner)
@@ -25,6 +27,8 @@
 │ └── testcases.txt # 本地测试用例
 ├── scripts/ # 自动化工具脚本
 └── README.md # 进度统计 (自动生成)
+```
+```
 
 
 ---
@@ -63,13 +67,20 @@
 如果你也想在本地运行这些解法，可以参考以下命令：
 
 **Python**:
+```shell
+```
 cd 0001-two-sum
 python3 solution.py
+```
+```
 
 **Rust**:
+```shell
+```
 cd 0001-two-sum
 rustc solution.rs && ./solution
-
+```
+```
 
 
 ## 📝 备注
