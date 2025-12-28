@@ -15,9 +15,9 @@ from generators.registry import get_generator
 API_URL = "https://leetcode.cn/graphql/"
 HEADERS = {"Content-Type": "application/json"}
 
-# 先只注册 python，跑通后再逐个加
 LANG_CONFIG = {
     "python": {"ext": "py", "langSlug": "python3"},
+    "java":   {"ext": "java", "langSlug": "java"}, 
 }
 
 def html_to_markdown(html: str) -> str:
