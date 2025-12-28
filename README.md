@@ -29,16 +29,16 @@
 
 ## 语言统计
 
-- Java：0 题
+- Java：1 题
 - Rust：1 题
-- Go：0 题
-- Python：0 题
+- Go：1 题
+- Python：1 题
 
 ## 题目列表
 
 | 编号 | 标题 | 难度 | 支持语言 | 更新时间 |
 |------|------|------|----------|----------|
-| 0001 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | Rust | 2025-12-26 |
+| 0001 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | Go, Java, Python, Rust | 2025-12-28 |
 
 
 ## 其他
