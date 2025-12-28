@@ -80,7 +80,7 @@ for (const folder of folders) {
 
     for (const file of files) {
         // 只识别 solution.xxx 文件
-        if (file.startsWith('solution.') && file !== 'solution.pyc') {
+        if ((file.startsWith('solution.') || file.startsWith('Solution.')) && file !== 'solution.pyc') {
             const ext = path.extname(file);
             const langName = LANGUAGE_MAP[ext];
             
