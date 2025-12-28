@@ -1,47 +1,80 @@
-# My LeetCode Solutions
 
-![LeetCode Stats Card](https://leetcard.jacoblin.cool/lightereb?site=cn&theme=dark&font=Source%20Code%20Pro&extension=activity)
+# 🚀 LeetCode Solutions by @lightereb
 
-<!-- 替换说明：
-   - 将 YOUR_LEETCODE_USERNAME 换成你的真实 LeetCode 用户名（区分大小写）。
-   - 如果用 LeetCode 中国站：https://leetcard.jacoblin.cool/YOUR_USERNAME?site=cn
-   - 主题可选：light（浅色）、dark（深色）、unicorn（彩虹）、默认不填也行。
-   - 更多自定义：访问 https://leetcard.jacoblin.cool/ 预览效果。
--->
+> **Talk is cheap. Show me the code.**  
+> 坚持编码，保持手感。这是一个记录算法进阶之路的代码仓库。
 
-## 仓库介绍
+## 📖 关于本项目
 
-这是一个我坚持刷 LeetCode 的个人记录仓库。
+本项目通过自动化脚本管理，旨在构建一个**轻量、可直接运行**的算法题解库。
 
-- **目的**：通过持续解题保持算法和编程的手感，享受不同思路碰撞与实现的过程。
-- **目录结构**：每个文件夹对应一道题目，名为 `xxxx-problem-slug`（如 `0001-two-sum`），内部存放不同语言的解决方案文件（如 `solution.java`、`solution.rs`、`solution.go`、`solution.py`）。
-- **语言支持**：Java、Rust、Go、Python。
-- **更新方式**：每次添加新题时，通过 GitHub Actions 脚本自动更新本 README 的进度统计与题目列表（后续实现）。
+### ✨ 核心特性
 
-欢迎参观，一起保持编码的节奏！
+- **多语言支持**：涵盖 Python, Rust, Go, C++ 等多种技术栈的解题实现。
+- **开箱即用**：每道题均配备**独立运行环境**，无需配置复杂的脚手架或依赖，单文件即可编译/运行。
+- **自动化管理**：
+  - 自动拉取题目描述 (`problem.md`) 与测试用例 (`testcases.txt`)
+  - 自动生成对应语言的模版代码 (`solution.py/rs/...`)
+  - 自动更新本 README 的进度统计
+
+### 🛠️ 目录结构
+├── 0001-two-sum/ # 题目编号-题目Slug
+│ ├── problem.md # 题目描述
+│ ├── solution.py # Python 解法 (含本地 Runner)
+│ ├── solution.rs # Rust 解法
+│ └── testcases.txt # 本地测试用例
+├── scripts/ # 自动化工具脚本
+└── README.md # 进度统计 (自动生成)
+
+
+---
+
+<!-- START_PROBLEMS -->
 
 ## 刷题进度
 
-- 已解决题目：1
-- Easy：1
-- Medium：0
-- Hard：0
+- 🏁 **已解决题目**：1
+- 🟢 **Easy**：1
+- 🟡 **Medium**：0
+- 🔴 **Hard**：0
 
-## 语言统计
+### 语言分布
 
-- Java：1 题
-- Rust：1 题
-- Go：1 题
-- Python：1 题
+| 语言 | 题数 |
+|:---|:---:|
+| Python | 1 |
+| Java | 1 |
+| Rust | 1 |
+| Go | 1 |
+| C++ | 1 |
 
 ## 题目列表
 
-| 编号 | 标题 | 难度 | 支持语言 | 更新时间 |
-|------|------|------|----------|----------|
-| 0001 | [Two Sum](https://leetcode.com/problems/two-sum/) | Easy | Go, Java, Python, Rust | 2025-12-28 |
+| 编号 | 标题 | 难度 | 解法 | 更新时间 |
+|:---:|:-----|:---:|:-----|:--------:|
+| 0001 | [Two Sum](https://leetcode.cn/problems/two-sum/) | 🟢 Easy | C++, Go, Java, Python, Rust | 2025-12-28 |
+
+<!-- END_PROBLEMS -->
+
+---
+
+## ⚡ 如何使用
+
+如果你也想在本地运行这些解法，可以参考以下命令：
+
+**Python**:
+cd 0001-two-sum
+python3 solution.py
+
+**Rust**:
+cd 0001-two-sum
+rustc solution.rs && ./solution
 
 
-## 其他
 
-- 偶尔会记录一些多语言实现对比或解题心得。
-- 感谢访问！如果有有趣的实现想法，欢迎通过 Issue 交流～
+## 📝 备注
+
+- 题目元数据与测试用例均来自 LeetCode 官方。
+- 欢迎提交 Issue 或 PR 分享更优解法。
+- _Happy Coding!_
+
