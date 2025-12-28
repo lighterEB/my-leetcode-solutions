@@ -18,6 +18,7 @@ HEADERS = {"Content-Type": "application/json"}
 LANG_CONFIG = {
     "python": {"ext": "py", "langSlug": "python3"},
     "java":   {"ext": "java", "langSlug": "java"}, 
+    "rust":   {"ext": "rust", "langSlug": "rust"},
 }
 
 def html_to_markdown(html: str) -> str:
