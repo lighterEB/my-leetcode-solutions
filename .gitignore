@@ -19,3 +19,4 @@
 # 5) 额外：保留根目录的一些文件（可选）
 !.gitignore
 !README.md
+!scripts/*
