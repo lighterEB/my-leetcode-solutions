@@ -6,19 +6,24 @@
 # 根目录文件
 !.gitignore
 !README.md
-!LICENSE                # 如果没有，可删除这行
+!LICENSE                # 如果没有，可删除
 
-# 完整放行 scripts 目录（这是最保险的写法）
+# 完整放行 scripts 目录（你的刷题工具脚本）
 !scripts/
 !scripts/**
 !scripts/**/*
 
+# 完整放行 .github 目录（关键改动！包括 workflows 和里面的所有脚本）
+!.github/
+!.github/**
+!.github/**/*
+
 # ==================== 强制放行所有题目相关内容（递归） ====================
 
-# 放行所有题目文件夹本身（关键！否则子文件无法被识别）
+# 放行所有目录（必须保留这一行）
 !**/
 
-# 放行题目目录下的关键文件
+# 放行题目关键文件
 !**/problem.md
 !**/testcases.txt
 !**/input.txt           # 可选
@@ -34,32 +39,15 @@
 !**/solution.ts
 !**/solution.kt
 
-# ==================== 额外排除常见编译/缓存文件（强化保险） ====================
+# ==================== 额外排除常见垃圾文件 ====================
 
-# Python
 __pycache__/
 *.py[cod]
-*.pyo
-*.pyd
-
-# Java
 *.class
-target/
-
-# C/C++
 *.o
-*.obj
 *.exe
 *.out
-
-# Go / Rust 等
-*.a
-*.so
-
-# 编辑器和系统垃圾文件
 .DS_Store
 .idea/
 .vscode/
-*.swp
-*~
 node_modules/
