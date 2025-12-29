@@ -1,22 +1,129 @@
-
-# 1) 先忽略所有文件
+# 1. 先忽略所有文件和目录（核心规则）
 *
 
-# 2) 但不要忽略目录（否则无法继续匹配子文件）
-!**/
+# 2. 强制保留根目录下的重要文件和目录
+!.gitignore
+!README.md
+!LICENSE                # 如果有 LICENSE 文件，可删除这行如果没有
+!scripts/               # 保留 scripts 文件夹
+!scripts/**             # 保留 scripts 下所有内容（文件和子目录）
 
-# 3) 保留每题目录里的关键文件（按你的实际文件名改）
+# 3. 强制保留每个题目目录下的关键文件（递归所有子目录）
 !**/problem.md
 !**/testcases.txt
+!**/input.txt           # 可选，如果你有时使用
+!**/output.txt          # 可选
 
-# 4) 保留各语言解题文件（你脚本生成的是这些名字）
+# 4. 强制保留各语言的解决方案文件（递归所有子目录）
 !**/solution.py
 !**/solution.go
 !**/solution.java
 !**/solution.cpp
 !**/solution.rs
+!**/solution.js         # 可选
+!**/solution.ts         # 可选
+!**/solution.kt         # 可选
 
-# 5) 额外：保留根目录的一些文件（可选）
-!.gitignore
-!README.md
-!scripts/**/*
+# ==================== 以下是新增的排除规则（放在放行规则之前） ====================
+
+# 5. 编译文件、字节码、缓存文件（各种语言常见）
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+build/
+dist/
+*.egg
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+target/
+
+# C/C++
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+*.exe
+*.out
+
+# Go
+*.a
+*.so
+
+# Rust
+target/
+*.rlib
+*.dll
+
+# Node.js / JavaScript
+node_modules/
+dist/
+build/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# 6. 编辑器和 IDE 配置缓存
+# VS Code
+.vscode/
+!.vscode/settings.json  # 如果你想保留特定配置，可放行，否则删除这行
+
+# PyCharm / IntelliJ
+.idea/
+*.iml
+*.iws
+
+# Vim / Neovim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# macOS 系统文件
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+
+# Thumbnails
+.Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
+
+# Windows 系统文件
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# 7. 其他常见缓存和临时文件
+*.tmp
+*.temp
+*.bak
+*.cache
+.cache/
+tmp/
+temp/
+
+# 测试缓存
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
