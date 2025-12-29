@@ -21,7 +21,7 @@ LANG_CONFIG = {
     "rust":   {"ext": "rust", "langSlug": "rust"},
     "go":   {"ext": "go", "langSlug": "golang"},
     "cpp":   {"ext": "cpp", "langSlug": "cpp"},
-
+    "js":    {"ext": "js", "langSlug": "js"},
 
 }
 
