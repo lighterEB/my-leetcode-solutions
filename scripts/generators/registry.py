@@ -1,11 +1,11 @@
-#from .python_gen import PythonGenerator
+from .python_gen import PythonGenerator
 from .java_gen import JavaGenerator
 from .rust_gen import RustGenerator
 from .go_gen import GoGenerator
 from .cpp_gen import CppGenerator
 
 _GENERATORS = {
-    #"python": PythonGenerator(),
+    "python": PythonGenerator(),
     "java": JavaGenerator(),
     "rust": RustGenerator(),
     "go": GoGenerator(),
